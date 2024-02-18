@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('number', 16)->unique();
             $table->string('title', 150);
-            $table->string('slug', 160)->unique();
-            $table->foreignId('poster_id')->nullable()->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('community_id')
+              ->constrained()
+              ->cascadeOnDelete()
+              ->cascadeOnUpdate();
+            $table->foreignId('poster_id')
+              ->nullable()
+              ->constrained('users')
+              ->nullOnDelete()
+              ->cascadeOnUpdate();
             $table->timestamp('posted_at');
-            $table->timestamp('updated_at')->nullable();
-            $table->timestamp('archived_at')->nullable();
+            $table->timestamp('edited_at')->nullable();
+            $table->softDeletes('archived_at');
         });
     }
 
